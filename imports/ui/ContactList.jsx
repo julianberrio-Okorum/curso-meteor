@@ -6,13 +6,13 @@ export const ContactList = () => {
         return  ContactsCollection.find({}).fetch();
     });
     return (
-        <div>
-            <h2>Contact List</h2>
-            <ul>
+        <div className='mt-10'>
+            <h2 className='font-bold text-gray-500'>Contact List</h2>
+            <ul className=''>
                 {contacts.map(contact => (
-                    <li key={contact._id}>
-                        {contact.name} - {contact.email}
-                    </li>
+                        <li className="p-2 text-white bg-black rounded-md flex gap-2 mt-2" key={contact._id}>
+                            <img className="w-12 rounded-md" src={contact.imageURL} alt="" /><p>{contact.name} - {contact.email}</p>
+                        </li>
                 ))}
             </ul>
         </div>
