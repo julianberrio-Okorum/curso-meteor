@@ -1,10 +1,12 @@
 import React from 'react';
 import {ContactsCollection} from '../api/ContactsCollection.js';
-import {useTracker} from 'meteor/react-meteor-data';
+import { useSubscribe, useFind} from 'meteor/react-meteor-data';
+
 export const ContactList = () => {
-    const contacts = useTracker( () => {
-        return  ContactsCollection.find({}).fetch();
-    });
+   const isLoading = useSubscribe('allContacts');
+    const contacts = useFind(() => {
+        return ContactsCollection.find({});
+    })
     const deleteSubmit = (e, contactId) => {
         e.preventDefault();
         Meteor.call('contacts.remove', contactId, (error) => {
@@ -15,9 +17,11 @@ export const ContactList = () => {
             }
         });
     };
+    console.log(isLoading())
     return (
         <div className='mt-10'>
             <h2 className='font-bold text-gray-500'>Contact List</h2>
+            {isLoading() && <p className='text-center'>Loading...</p>}
             <ul className=''>
                 {contacts.map(contact => (
                         <li className="p-2 text-white bg-black rounded-xl  mt-2 flex justify-between " key={contact._id}>
