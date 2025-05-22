@@ -1,23 +1,33 @@
 import React, {useState} from 'react';
-import {ContactsCollection} from '../api/ContactsCollection.js';
+import {Meteor} from 'meteor/meteor';
+import { MessageNotification } from './MessageNotification';
 export const ContactForm = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [imageURL, setImageURL] = useState('');
+    const [response, setResponse] = useState({});
     
     const submit =  () => {
-        ContactsCollection.insert({
-            name,
-            email,
-            imageURL
-        });
-        setName('');
-        setEmail('');
-        setImageURL('');
+        Meteor.call('contacts.insert', name, email, imageURL, (error) => {
+            if (error) {
+                setResponse({type: 'error', message: error.reason});
+            } else {
+                setName('');
+                setEmail('');
+                setImageURL('');
+                setResponse({type: 'success', message: 'Contact added successfully!'});
+                setTimeout(() => {
+                    setResponse({});
+                }
+                , 6000);
+            }
+        })
+
     }
     return(
         
-    <div className='mt-10  p-4 shadow-lg'>
+    <div className='mt-10  p-4 shadow-md rounded-lg border'>
+        {response?.type && <MessageNotification type={response.type} message={response.message} />}
         <form className='flex flex-col w-full gap-4 items-center' >
             <div className='flex w-full gap-4 justify-center'>
                 <div className='flex flex-col w-50 font-bold'>
